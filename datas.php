@@ -9,66 +9,28 @@
 **/
 
 function calculaDias($dataInicial, $dataFinal) {
-	/*
-		- Setembro, abril, junho e novembro tem 30 dias, todos os outros meses tem 31 exceto fevereiro que tem 28, exceto nos anos bissextos nos quais ele tem 29.
-		- Os anos bissexto tem 366 dias e os demais 365.
-		- Todo ano divisivel por 4 e um ano bissexto.
-		- A regra acima não e valida para anos divisiveis por 100. Estes anos devem ser divisiveis por 400 para serem anos bissextos. Assim, o ano 1700, 1800, 1900 e 2100 nao sao bissextos, mas 2000 e bissexto.
-		- Não e permitido o uso de classes e funcoes de data da linguagem (DateTime, mktime, strtotime, etc).
-	*/
-	
-	// Convertendo as datas para arrays
+    // Convertendo as datas para arrays
     $dataInicial = explode('-', $dataInicial);
     $dataFinal = explode('-', $dataFinal);
-
-    // Convertendo as partes das datas para inteiros
-    $anoInicial = intval($dataInicial[0]);
-    $mesInicial = intval($dataInicial[1]);
-    $diaInicial = intval($dataInicial[2]);
-
-    $anoFinal = intval($dataFinal[0]);
-    $mesFinal = intval($dataFinal[1]);
-    $diaFinal = intval($dataFinal[2]);
     
+    // Array com o número de dias em cada mês
+    $diasMeses = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+    // Verifica se os anos dados são bissextos e ajusta o número de dias em fevereiro se necessário
+    if ($dataInicial[0] % 4 == 0 && ($dataInicial[0] % 100 != 0 || $dataInicial[0] % 400 == 0)) {
+        $diasMeses[1] = 29;
+    }
+    if ($dataFinal[0] % 4 == 0 && ($dataFinal[0] % 100 != 0 || $dataFinal[0] % 400 == 0)) {
+        $diasMeses[1] = 29;
+    }
     
-    // Array Dias dos Meses
-    $diasMeses = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    // Cálculo da diferença total de dias entre as datas
+    $dias_Inicial = intval($dataInicial[2]) + array_sum(array_slice($diasMeses, 0, $dataInicial[1] - 1)) + intval(($dataInicial[0] - 1) * 365) + intval(($dataInicial[0] - 1) / 4) - intval(($dataInicial[0] - 1) / 100) + intval(($dataInicial[0] - 1) / 400);
+    $dias_Finais = intval($dataFinal[2]) + array_sum(array_slice($diasMeses, 0, $dataFinal[1] - 1)) + intval(($dataFinal[0] - 1) * 365) + intval(($dataFinal[0] - 1) / 4) - intval(($dataFinal[0] - 1) / 100) + intval(($dataFinal[0] - 1) / 400);
     
-     // Verificar se os anos são bissextos
-    $bissextoInicial = ($anoInicial % 4 == 0 && ($anoInicial % 100 != 0 || $anoInicial % 400 == 0));
-    $bissextoFinal = ($anoFinal % 4 == 0 && ($anoFinal % 100 != 0 || $anoFinal % 400 == 0));
-
-    // Adicionar um dia extra para fevereiro se o ano for bissexto
-    if ($bissextoInicial) {
-        $diasMeses[2]++;
-    }
-    if ($bissextoFinal) {
-        $diasMeses[2]++;
-    }
-
-    // Calcular a diferença de dias
-    $diasTotais = 0;
-
-    // Adicionar dias restantes no ano inicial
-    $diasTotais += $diasMeses[$mesInicial] - $diaInicial;
-
-    // Adicionar dias completos de anos intermediários
-    for ($ano = $anoInicial + 1; $ano < $anoFinal; $ano++) {
-        $diasTotais += $bissextoInicial ? 366 : 365;
-        $bissextoInicial = ($ano % 4 == 0 && ($ano % 100 != 0 || $ano % 400 == 0));
-    }
-
-    // Adicionar dias completos do ano final até a data final
-    for ($mes = 1; $mes < $mesFinal; $mes++) {
-        $diasTotais += $diasMeses[$mes];
-    }
-    $diasTotais += $diaFinal;
-
-    return $diasTotais;
-
+    // Retorna a diferença total de dias entre as datas
+    return abs($dias_Inicial - $dias_Finais);
 }
-
-
 
 /***** Teste 01 *****/
 $dataInicial = "2018-01-01";
