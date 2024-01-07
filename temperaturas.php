@@ -6,9 +6,29 @@
 * @param array $temperaturas Lista de temperaturas
 * @return int A temperatura mais proxima de zero
 **/
-function menorTemperatura($temperaturas) {
-	
-	return(0);
+
+function menorTemperatura($temperaturas)
+{
+     // Inicializa variáveis para armazenar
+    $menorDiferenca = PHP_INT_MAX;
+    $temperaturaMaisProxima = 0;
+
+    // Percorre a lista de temperaturas
+    foreach ($temperaturas as $temperatura) {
+        // Calcula a diferença absoluta entre a temperatura e zero
+        $diferenca = abs($temperatura - 0);
+    
+        // Verifica se a diferença atual é menor que a menor diferença registrada
+        // ou se as diferenças são iguais, mas a temperatura atual é positiva
+        if ($diferenca < $menorDiferenca || ($diferenca === $menorDiferenca && $temperatura > 0)) {
+            
+            // Atualiza a menor diferença e a temperatura correspondente
+            $menorDiferenca = $diferenca;
+            $temperaturaMaisProxima = $temperatura;
+        }
+    }
+     //Retorna a temperatura mais próxima de zero
+    return $temperaturaMaisProxima;
 }
 
 
