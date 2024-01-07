@@ -7,6 +7,7 @@
 * @param string $dataFinal No formato YYYY-MM-DD
 * @return int O numero de dias entre as datas
 **/
+
 function calculaDias($dataInicial, $dataFinal) {
 	/*
 		- Setembro, abril, junho e novembro tem 30 dias, todos os outros meses tem 31 exceto fevereiro que tem 28, exceto nos anos bissextos nos quais ele tem 29.
@@ -16,7 +17,55 @@ function calculaDias($dataInicial, $dataFinal) {
 		- Não e permitido o uso de classes e funcoes de data da linguagem (DateTime, mktime, strtotime, etc).
 	*/
 	
-	return(0);
+	// Convertendo as datas para arrays
+    $dataInicial = explode('-', $dataInicial);
+    $dataFinal = explode('-', $dataFinal);
+
+    // Convertendo as partes das datas para inteiros
+    $anoInicial = intval($dataInicial[0]);
+    $mesInicial = intval($dataInicial[1]);
+    $diaInicial = intval($dataInicial[2]);
+
+    $anoFinal = intval($dataFinal[0]);
+    $mesFinal = intval($dataFinal[1]);
+    $diaFinal = intval($dataFinal[2]);
+    
+    
+    // Array Dias dos Meses
+    $diasMeses = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    
+     // Verificar se os anos são bissextos
+    $bissextoInicial = ($anoInicial % 4 == 0 && ($anoInicial % 100 != 0 || $anoInicial % 400 == 0));
+    $bissextoFinal = ($anoFinal % 4 == 0 && ($anoFinal % 100 != 0 || $anoFinal % 400 == 0));
+
+    // Adicionar um dia extra para fevereiro se o ano for bissexto
+    if ($bissextoInicial) {
+        $diasMeses[2]++;
+    }
+    if ($bissextoFinal) {
+        $diasMeses[2]++;
+    }
+
+    // Calcular a diferença de dias
+    $diasTotais = 0;
+
+    // Adicionar dias restantes no ano inicial
+    $diasTotais += $diasMeses[$mesInicial] - $diaInicial;
+
+    // Adicionar dias completos de anos intermediários
+    for ($ano = $anoInicial + 1; $ano < $anoFinal; $ano++) {
+        $diasTotais += $bissextoInicial ? 366 : 365;
+        $bissextoInicial = ($ano % 4 == 0 && ($ano % 100 != 0 || $ano % 400 == 0));
+    }
+
+    // Adicionar dias completos do ano final até a data final
+    for ($mes = 1; $mes < $mesFinal; $mes++) {
+        $diasTotais += $diasMeses[$mes];
+    }
+    $diasTotais += $diaFinal;
+
+    return $diasTotais;
+
 }
 
 
